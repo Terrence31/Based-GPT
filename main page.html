@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT Website</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: black;
+    }
+
+    header {
+      background: linear-gradient(to bottom, white, black);
+      padding: 50px;
+      text-align: center;
+      position: relative;
+      height: 50px;
+    }
+
+    .logo img {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 230px;
+      height: 100px;
+    }
+
+    button {
+      font-family: 'Nova Cut', cursive;
+      height: 50px;
+      width: 200px;
+      float: right;
+      position: relative;
+      top: -20px;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+      animation: gradient-animation 1s ease-in-out infinite;
+    }
+
+    @keyframes gradient-animation {
+      0% {
+        background: linear-gradient(45deg, #ff0000, #04a717);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background: linear-gradient(45deg, #0011ff, #ff00a6);
+        background-size: 200% 200%;
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background: linear-gradient(45deg, #8201a2, #b7ff00);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+      }
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    h1 {
+      font-family: 'Exo 2', sans-serif;
+      color: white;
+      padding: 30px;
+      margin: 10px;
+      font-size: 100px;
+      text-align: left
+    }
+
+    p {
+      font-family: 'Kalam', cursive;
+      color: white;
+      font-size: 23px;
+      width: 700px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    p:hover {
+      transform: translateY(-5px);
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    section {
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .image img {
+      position: relative;
+      float: right;
+      width: 800px;
+      height: 400px;
+      transition: all 0.9s ease-in-out;
+    }
+
+    .image img:hover {
+      transform: scale(1.05);
+    }
+
+    .box {
+      width: 500px;
+      height: 600px;
+      border-radius: 10px;
+      margin-left: 70px;
+      margin-right: 70px;
+      animation: gradient-animation 3s ease-in-out infinite;
+    }
+
+    .boxes {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 200px;
+    }
+
+    .boxes img {
+      position: relative;
+      top: -10px;
+      left: 35%;
+      width: 100px;
+      height: 100px;
+    }
+
+    .box h1 {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .box:hover {
+      transform: scale(1.3);
+      transition: all 0.7s ease-in-out;
+    }
+
+    .boxes p {
+      font-family: 'Alegreya', serif;
+      font-size: 20px;
+      width: fit-content;
+    }
+
+    #outputText {
+      border: 1px solid #333;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Logo">
+    </div>
+    <div class="buttons">
+      <button onclick="window.location.href = 'http://localhost:8501/';">Try Based GPT</button>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya&family=Exo+2:ital,wght@1,600&family=Kalam:wght@300&family=Nova+Cut&display=swap" rel="stylesheet">
+      <h1>
+        BASED GPT
+      </h1>
+      <div class="image">
+        <img src="image1.jpg">
+      </div>
+      <p>
+        GPT stands for generative pre-trained transformer, which is a program that can realistically write like a
+        human.<br><br><br>
+        GPT software has the potential to transform many industries, including healthcare, finance, and customer
+        service, by automating tasks and improving communication between people and machines.<br><br><br>
+        To generate natural language text that is coherent and relevant to a given context or prompt.
+      </p>
+    </section>
+  </main>
+
+  <main>
+    <section>
+      <div class="boxes">
+        <div class="box">
+          <h1>FEATURES</h1>
+          <img src="features.png">
+          <P>
+            <strong>Text generation:</strong> Based GPT can generate coherent and relevant text based on a given prompt
+            or context.<br>
+
+            <strong>Language translation:</strong> Based GPT supports 14 different languages and can translate text from
+            one language to another.<br>
+
+            <strong>Text summarization:</strong> Based GPT summarizes long texts into shorter and more concise
+            text.<br>
+
+            <strong> Question-answering:</strong> Based GPT can answer questions based on a given context or
+            prompt.
+          </P>
+        </div>
+        <div class="box">
+          <h1>LIMITATIONS</h1>
+          <img src="limitations.png">
+          <p>May occasionally generate incorrect information.<br><br><br>
+            May occasionally produce harmful instructions or biased content.<br><br><br>
+            Supports only a few language translations.<br><br><br>
+          </p>
+        </div>
+        <div class="box">
+          <h1>EXAMPLES</h1>
+          <img src="example.png">
+          <p>
+            Explain how a Turbocharger works?<br><br><br>
+            Transalte the text to Hindi.<br><br><br>
+            Summarize the following thext.<br><br><br>
+          </p>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("generateBtn").addEventListener("click", function () {
+      var inputText = document.getElementById("inputText").value;
+      // Code to generate text using GPT model and display it in the outputText div
+    });
+  </script>
+</body>
+
+</html>
