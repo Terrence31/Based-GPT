@@ -1,6 +1,11 @@
 import streamlit as st
 from datetime import datetime
-
+from happytransformer import HappyTextToText
+from happytransformer import TTSettings
+from langdetect import detect
+import torch
+import wikipedia
+from transformers import AutoTokenizer, AutoModelWithLMHead
 
 # Configure page layout
 st.set_page_config(
@@ -150,7 +155,7 @@ if message_input:
     })
 
     # Generate assistant response (dummy response in this example)
-    assistant_response = "This is the assistant's response."
+    assistant_response = translation(input_text)
 
     # Add assistant message to chat history
     chat_history.append({
@@ -172,3 +177,31 @@ for chat in chat_history:
     # Display assistant message
     else:
         st.markdown(f'<div style="{ASSISTANT_MESSAGE_STYLE}">{chat["message"]}</div>', unsafe_allow_html=True)
+
+
+function translation(inp):
+    text1 = inp
+    lang1 = detect(text1)
+    lang2 = input('Enter the language to translate the text into:: ')
+    API_URL = f"Helsinki-NLP/opus-mt-{lang1}-{lang2}"
+    #print(API_URL)
+
+    happy_tt = HappyTextToText("MARIAN", f"Helsinki-NLP/opus-mt-{lang1}-{lang2}")
+    arg = TTSettings(min_length=2)
+    result = happy_tt.generate_text(text1, args=arg)
+    return(result.text)
+
+
+function summariser(inp):
+    tokenizer = AutoTokenizer.from_pretrained('t5-base')
+    model = AutoModelWithLMHead.from_pretrained('t5-base', return_dict=True)
+
+    sequence = wikipedia.summary(inp, sentences=8)
+    #print(sequence)
+    inputs = tokenizer.encode("summarize: " + sequence, return_tensors='pt', max_length=512, truncation=True)
+
+    summary_ids = model.generate(inputs, max_length=300, min_length=80, length_penalty=5., num_beams=2)
+
+    summary = tokenizer.decode(summary_ids[0])
+
+    return(summary)
