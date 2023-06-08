@@ -7,7 +7,7 @@ import torch
 import wikipedia
 from transformers import AutoTokenizer, AutoModelWithLMHead
 
-# Configure page layout
+# Configure page layouts
 st.set_page_config(
     page_title="BasedGPT",
     page_icon=":speech_balloon:",
@@ -50,6 +50,12 @@ ASSISTANT_MESSAGE_STYLE = f"""
 """
 #commands
 
+#page tile
+st.title("Based GPT")
+
+st.markdown('<div class="line"></div>', unsafe_allow_html=True)
+
+
 col1, col2 = st.columns(2)
 
 col1.markdown(
@@ -85,11 +91,10 @@ col2.markdown(
 )
 
 
-# Page title
-st.title("BasedGPT")
-
 # Sidebar
-st.sidebar.title("BasedGPT")
+st.sidebar.title("Based GPT")
+st.sidebar.markdown('<div class="line"></div>', unsafe_allow_html=True)
+
 
 
 with st.sidebar.container():
@@ -105,45 +110,22 @@ with st.sidebar.container():
             padding: 10px;
             border-radius: 10px;
         }
+
+        .sidebar .sidebar-content .sidebar-section .sidebar-title {
+        font-size: 30px;
         </style>
         """,
         unsafe_allow_html=True
     )
 
-#logic
-#def translate(text):
- #   trans_text          #add the translated text
-
 
 # Main content
 
 chat_history = []
-button=st.button("Translation")
+st.write("")
 message_input = st.text_input("Welcome " + user_name)
 
-if button:
-    col3,col4=st.columns(2)
-    with col3:
-        col3.header("Original Text")
-        languages = ["AUTO-DETECT","ARABIC","CHINESE","CZECH","ENGLISH","FRENCH","GERMAN","HINDI","INDONESIAN","ITALIAN","MALAYALAM","MARATHI","RUSSIAN","UKRAINIAN","VIETNAMESE"]
-        language_selected= st.selectbox("",options=languages)
-        input_text = col3.text_input("Enter the text to be Translated")
-    
-    with col4:
-        col4.header("Translated Text")
-        languages = ["ARABIC","CHINESE","CZECH","ENGLISH","FRENCH","GERMAN","HINDI","INDONESIAN","ITALIAN","MALAYALAM","MARATHI","RUSSIAN","UKRAINIAN","VIETNAMESE"]
-        language_selected= st.selectbox(" ",options=languages)
-        col4.write("The translation is")
-        col4.markdown(
-        """
-        <div style="background-color:gray; border: 2px solid black; border-radius: 10px; padding: 10px;">
-        </div>
-        """,
-        unsafe_allow_html=True
-        )
-    
-
-    
+text_button=st.button("ENTER")
 
 if message_input:
     # Add user message to chat history
@@ -153,6 +135,56 @@ if message_input:
         "message": message_input,
         "is_user": True,
     })
+
+
+def summariser(inp):
+    tokenizer = AutoTokenizer.from_pretrained('t5-base')
+    model = AutoModelWithLMHead.from_pretrained('t5-base', return_dict=True)
+
+    sequence = wikipedia.summary(inp, sentences=8)
+    #print(sequence)
+    inputs = tokenizer.encode("summarize: " + sequence, return_tensors='pt', max_length=512, truncation=True)
+
+    summary_ids = model.generate(inputs, max_length=300, min_length=80, length_penalty=5., num_beams=2)
+
+    summary = tokenizer.decode(summary_ids[0])
+
+    if summary.startswith('<pad>'):
+        summary = summary[len('<pad>'):]
+    
+    # Remove <s> tag at the end
+    if summary.endswith('</s>'):
+        summary = summary[:-len('</s>')]
+
+    return(summary)
+
+
+# Display chat history
+for chat in chat_history:
+    # Display timestamp if enabled
+    if show_timestamps:
+        st.write(chat["timestamp"].strftime("%Y-%m-%d %H:%M:%S"))
+
+    # Display user message
+    if chat["is_user"]:
+        st.markdown(f'<div style="{USER_MESSAGE_STYLE}">{chat["message"]}</div>', unsafe_allow_html=True)
+#display answer
+if text_button:
+     answer=summariser(message_input)
+     st.write(answer)
+
+
+def  translation(inp, out):
+    text1 = inp
+    lang1 = detect(text1)
+    lang2 = out
+    API_URL = f"Helsinki-NLP/opus-mt-{lang1}-{lang2}"
+    #print(API_URL)
+
+    happy_tt = HappyTextToText("MARIAN", f"Helsinki-NLP/opus-mt-{lang1}-{lang2}")
+    arg = TTSettings(min_length=2)
+    result = happy_tt.generate_text(text1, args=arg)
+    return(result.text)
 
     # Generate assistant response (dummy response in this example)
     assistant_response = translation(input_text)
@@ -165,43 +197,74 @@ if message_input:
         "is_user": False,
     })
 
-# Display chat history
-for chat in chat_history:
-    # Display timestamp if enabled
-    if show_timestamps:
-        st.write(chat["timestamp"].strftime("%Y-%m-%d %H:%M:%S"))
 
-    # Display user message
-    if chat["is_user"]:
-        st.markdown(f'<div style="{USER_MESSAGE_STYLE}">{chat["message"]}</div>', unsafe_allow_html=True)
-    # Display assistant message
-    else:
-        st.markdown(f'<div style="{ASSISTANT_MESSAGE_STYLE}">{chat["message"]}</div>', unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+    .line {
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        height: 1px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    </style>
+    """
+    , unsafe_allow_html=True)
+
+# Add the line to your site
+st.markdown('<div class="line"></div>', unsafe_allow_html=True)
+
+# Rest of your Streamlit code
+
+st.write("")
+st.header("TRANSLATION")
+col3,col4=st.columns(2)
+Translate_button=st.button("Translate")
+with col3:
+    col3.header("Original Text")
+    languages = ["AUTO-DETECT","ARABIC","CHINESE","CZECH","ENGLISH","FRENCH","GERMAN","HINDI","INDONESIAN","ITALIAN","MALAYALAM","MARATHI","RUSSIAN","UKRAINIAN","VIETNAMESE"]
+    language_selected1= st.selectbox("",options=languages)
+    input_text = col3.text_input("Enter the text to be Translated")
 
 
-function translation(inp):
-    text1 = inp
-    lang1 = detect(text1)
-    lang2 = input('Enter the language to translate the text into:: ')
-    API_URL = f"Helsinki-NLP/opus-mt-{lang1}-{lang2}"
-    #print(API_URL)
+with col4:
+    col4.header("Translated Text")
+    languages = ["ARABIC","CHINESE","CZECH","ENGLISH","FRENCH","GERMAN","HINDI","INDONESIAN","ITALIAN","MALAYALAM","MARATHI","RUSSIAN","UKRAINIAN","VIETNAMESE"]
+    language_selected2= st.selectbox(" ",options=languages)
+    if language_selected2 == "ARABIC":
+            language_selected2='ar'
+    if language_selected2 == "CHINESE":
+            language_selected2='zh'
+    if language_selected2 == "CZECH":
+            language_selected2='cs'
+    if language_selected2 == "ENGLISH":
+            language_selected2='en'
+    if language_selected2 == "FRENCH":
+            language_selected2='fr'
+    if language_selected2 == "GERMAN":
+            language_selected2='de'
+    if language_selected2 == "HINDI":
+            language_selected2='hi'
+    if language_selected2 == "INDONESIAN":
+            language_selected2='id'
+    if language_selected2 == "ITALIAN":
+            language_selected2='it'
+    if language_selected2 == "MALAYALAM":
+            language_selected2='ml'
+    if language_selected2 == "MARATHI":
+            language_selected2='mr'
+    if language_selected2 == "RUSSIAN":
+            language_selected2='ru'
+    if language_selected2 == "UKRAINIAN":
+            language_selected2='uk'
+    if language_selected2 == "VIETNAMESE":
+            language_selected2='vi'
+    col4.write("The translation is")
+    unsafe_allow_html=True
 
-    happy_tt = HappyTextToText("MARIAN", f"Helsinki-NLP/opus-mt-{lang1}-{lang2}")
-    arg = TTSettings(min_length=2)
-    result = happy_tt.generate_text(text1, args=arg)
-    return(result.text)
-
-
-function summariser(inp):
-    tokenizer = AutoTokenizer.from_pretrained('t5-base')
-    model = AutoModelWithLMHead.from_pretrained('t5-base', return_dict=True)
-
-    sequence = wikipedia.summary(inp, sentences=8)
-    #print(sequence)
-    inputs = tokenizer.encode("summarize: " + sequence, return_tensors='pt', max_length=512, truncation=True)
-
-    summary_ids = model.generate(inputs, max_length=300, min_length=80, length_penalty=5., num_beams=2)
-
-    summary = tokenizer.decode(summary_ids[0])
-
-    return(summary)
+    
+if Translate_button:
+    result= translation(input_text, language_selected2)
+    col4.write(result)
+    unsafe_allow_html=True
